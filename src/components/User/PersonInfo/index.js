@@ -32,7 +32,7 @@ class PersonInfo extends Component {
             //console.log(res);
            if(res.code == 0){
              let list=res.content;
-             //console.log(list)
+             console.log(list)
              var _userList=[];
                let _key = list.empId
                let _name = list.empName
@@ -40,12 +40,12 @@ class PersonInfo extends Component {
                let _sex = list.sex
                let _card = list.card
                let _jobName = list.jobName
-               let _dept = list.dept
+               let _dept = list.deptName
                let _phone = list.phone
                let _email = list.email
                _userList.push({'key':_key,'name':_name,'age':_age,'sex':_sex,'card':_card,'jobName':_jobName,'dept':_dept,'phone':_phone,'email':_email})
              
-             console.log(_userList)
+             //console.log(_userList)
              this.setState({dataSource:_userList})
            }else{
              message.error(res.message);

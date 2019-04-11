@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import './header.css';
 import screenfull from 'screenfull'
-import { Menu,Dropdown, Icon,Input,Badge,Modal,Form,message} from 'antd';
+import { Menu,Dropdown, Icon,Input,Badge,Modal,Form,message, Button} from 'antd';
 import api from '../../api/api';
 import {withRouter} from "react-router-dom";
 import md5 from "js-md5";
@@ -11,25 +11,45 @@ class Header extends Component {
   constructor(props) {
     super(props);
     this.state={
+      user:'',
       user_image:'',//用户头像
       icon: 'arrows-alt',
       count: 100,
       visible: false,
       adVisible: false,
-      avatar: require('./02.jpg')
+      avatar: require('./02.jpg'),
+      date:new Date(),//当前时间
+      endate:new Date(new Date(new Date().toLocaleDateString()).getTime()+24*60*60*1000-1),//当天23：59：59
+      downdate:new Date(new Date(new Date().toLocaleDateString()).getTime()+17*30*60*1000-1),
+      up_date:false,//签到状态
+      down_date:false,//签退状态
+      up_disabled:false,//签到按钮disabled
+      down_disabled:false,//签退按钮disabled
     }
   }
 
   componentDidMount(){
+    var _user = this.props.userName;
+      _user = JSON.parse( _user).userName;
+    this.setState({user:_user})
     screenfull.onchange(() => {
       this.setState({
         icon: screenfull.isFullscreen ? 'shrink' : 'arrows-alt'
       })
     })
+
+    this.interval = setInterval(() => this.tick(), 1000); 
+
+    var se = this.state.date
+    if(this.state.date==this.state.endate){
+      this.setState({up_disabled:false,down_date:false})
+    }
+    
   }
 
   componentWillUnmount () {
     screenfull.off('change')
+    clearInterval(this.interval);
   }
 
   //退出登录
@@ -98,29 +118,28 @@ class Header extends Component {
     });
   }
 
-  //调用打卡者信息
-  attendance = () =>{
-  //   var params = {
-
-  //   };  
-  //   api.atten(params).then(res =>{
-  //     console.log(res);
-  //    if(res.code == 0){
-  //      console.log('打卡成功')
-  //    }else{
-  //      message.error(res.message);
-  //    }
-  //  })
-    console.log('点击了')
-    this.setState({adVisible: true})
+  tick = () =>{
+    this.setState({date:new Date()})
   }
 
-  //打卡
-  handleOk = () =>{
-    //   var params = {
+  //调用打卡者信息
+  attendance = () =>{
+    //console.log('点击了')
+    this.setState({adVisible: true})
+    console.log(this.state.downdate)
+  }
 
-  //   };  
-  //   api.atten(params).then(res =>{
+  //签到
+  handleUp = () =>{
+    console.log('签到')
+    console.log(this.state.user)
+    this.setState({up_date:true,up_disabled:true})
+       var params = {
+        attend:this.state.date,
+        userId:this.state.user
+     };  
+     console.log(params.attend)
+  //   api.attend(params).then(res =>{
   //     console.log(res);
   //    if(res.code == 0){
   //      console.log('打卡成功')
@@ -128,6 +147,27 @@ class Header extends Component {
   //      message.error(res.message);
   //    }
   //  })
+  }
+
+  //签退
+  handleDown = () =>{
+    if(this.state.up_date){
+      console.log('签退')
+      var params = {
+        attend:this.state.date,
+        userId:this.state.user
+     };  
+     //   api.atten(params).then(res =>{
+      //     console.log(res);
+      //    if(res.code == 0){
+      //      console.log('打卡成功')
+      //    }else{
+      //      message.error(res.message);
+      //    }
+      //  })
+    }else{
+     message.warning('请先签到！')
+    }
   }
 
   render() {
@@ -240,14 +280,15 @@ class Header extends Component {
         title="今日打卡"
         visible={this.state.adVisible}
         wrapClassName="vertical-center-modal"
-        okText="打卡"
-        cancelText="取消"
-        onCancel={() => this.setState({adVisible: false})}
-        onOk={this.handleOk}>
+        footer={null}
+        onCancel={() => this.setState({adVisible: false})}>
         <ul>
-          <li><span>工号：</span></li>
           <li><span>姓名：</span></li>
-          <li><span>当前时间：</span></li>
+          <li><span>当前时间：{this.state.date.toLocaleTimeString('en-US', { hour12: false })}</span></li>
+          <span style={{float:'right'}}>
+          <Button type='primary' style={{marginRight:10}} onClick={this.handleUp} disabled={this.state.up_disabled}>签到</Button>
+          <Button onClick={this.handleDown} disabled={this.state.down_disabled}>签退</Button>
+          </span>
         </ul>
       </Modal>
 

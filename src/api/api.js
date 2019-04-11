@@ -46,9 +46,9 @@ export default{
         return axios.post(`${_baseUrl}/api/dept/del`,qs.stringify(params)).then(res=>res.data)
     },
 
-    //9.角色列表
-    getRoleList:params => {
-        return axios.get(`${_baseUrl}/api/role/list`,{params:params}).then(res=>res.data)
+    //9.打卡
+    attend:params => {
+        return axios.get(`${_baseUrl}/attend/add`,{params:params}).then(res=>res.data)
     },
     
     //10.添加角色

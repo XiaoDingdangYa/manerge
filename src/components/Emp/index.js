@@ -172,6 +172,17 @@ class Empp extends Component {
   //删除员工信息
   delete = (record) => {
     console.log(record)
+    var params = {
+      empId: record.key,
+    }
+    api.deleteEmp(params).then(res =>{
+      //console.log(res);
+     if(res.code == 0){
+      message.success('删除成功！');
+     }else{
+       message.error('');
+     }
+   })
 
   }
 
@@ -221,9 +232,9 @@ class Empp extends Component {
         key: 'action',
         render: (text, record) => (
           <span>
-            <Button type="primary" shape="circle" icon="edit" size='small' onClick={() => this.edit(record)} />
+            <a href="javascript:void(0)"onClick={() => this.edit(record)}>Edit</a>
             <Divider type="vertical" />
-            <Popconfirm title="确认删除${record.key}?" onConfirm={() => this.delete(record)} okText="确认" cancelText="取消">
+            <Popconfirm title="确认删除该员工?" onConfirm={() => this.delete(record)} okText="确认" cancelText="取消">
               <a href="#">Delete</a>
             </Popconfirm>
           </span>

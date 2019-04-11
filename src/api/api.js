@@ -36,14 +36,14 @@ export default{
         return axios.get(`${_baseUrl}/user/allInfo`).then(res=>res.data)
     },
 
-    //7.删除菜单
-    deleteMenu:params => {
-        return axios.post(`${_baseUrl}/api/menu/delete`,qs.stringify(params)).then(res=>res.data)
+    //7.删除员工
+    deleteEmp:params => {
+        return axios.post(`${_baseUrl}/user/del`,qs.stringify(params)).then(res=>res.data)
     },
 
-    //8.获取菜单列表
-    getMenuList:params => {
-        return axios.get(`${_baseUrl}/api/menu/list`,{params:params}).then(res=>res.data)
+    //8.删除部门
+    deleteDept:params => {
+        return axios.post(`${_baseUrl}/api/dept/del`,qs.stringify(params)).then(res=>res.data)
     },
 
     //9.角色列表

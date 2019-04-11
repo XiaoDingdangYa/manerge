@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { Table, Button, Input, Divider, message,Form,Modal } from 'antd';
+import { Table, Button, Input, Divider, message,Form,Modal,Popconfirm,notification,Icon } from 'antd';
 import {withRouter} from "react-router-dom";
 import api from './../../api/api';
 
@@ -65,7 +65,25 @@ class Departmentt extends Component {
     //删除部门信息
     delete = (record) => {
       console.log(record)
-      
+      var params = {
+        deptId: record.key,
+      }
+      if(record.count>0){
+        notification.open({
+          message: '删除错误',
+          description: '该部门旗下还有员工，无法删除',
+          icon: <Icon type="close-circle" style={{color:"red"}} />,
+        });
+      }else{
+        api.deleteDept(params).then(res =>{
+          //console.log(res);
+         if(res.code == 0){
+          message.success('删除成功！');
+         }else{
+           message.error('');
+         }
+       })
+      }
     }
 
  render(){
@@ -90,9 +108,11 @@ class Departmentt extends Component {
         key: 'action',
         render: (text, record) => (
             <span>
-              <Button type="primary" shape="circle" icon="edit" size='small' onClick={()=>this.edit(record)}/>
+              <a href="javascript:void(0)"onClick={() => this.edit(record)}>Edit</a>
               <Divider type="vertical" />
-              <Button type="primary" shape="circle" icon="delete" size='small' onClick={()=>this.delete(record)} />
+              <Popconfirm title="确认删除该部门?" onConfirm={() => this.delete(record)} okText="确认" cancelText="取消">
+                <a href="#">Delete</a>
+              </Popconfirm>
             </span>
           ),
       }];

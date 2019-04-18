@@ -9,14 +9,13 @@ const Department = LoadableComponent(()=>import('../Department'))
 
 const Attendance = LoadableComponent(()=>import('../Attendance'))
 
-const HumanResource = LoadableComponent(()=>import('../HumanResource'))
+const InfoPublish = LoadableComponent(()=>import('../HumanResource/InfoPublish'))
+const InfoSearch = LoadableComponent(()=>import('../HumanResource/InfoSearch'))
 
 const Emp = LoadableComponent(()=>import('../Emp'))
 
 const Permission = LoadableComponent(()=>import('../Permission'))
 
-const Entry = LoadableComponent(()=>import('../Certificate/Entry'))
-const Search = LoadableComponent(()=>import('../Certificate/Search'))
 
 
 
@@ -41,14 +40,12 @@ class ContentMain extends Component {
 
                 <Route exact path="/Attendance" component={Attendance}/>
 
-                <Route exact path="/HumanResource" component={HumanResource}/>
+                <Route exact path="/HumanResource/InfoPublish" component={InfoPublish}/>
+                <Route exact path="/HumanResource/InfoSearch" component={InfoSearch}/>
 
                 <Route exact path="/Emp" component={Emp}/>
 
                 <Route exact path="/Permission" component={Permission}/>
-
-                <Route exact path="/Certificate/Entry" component={Entry}/>
-                <Route exact path="/Certificate/Search" component={Search}/>
 
                 </Switch>            
         )

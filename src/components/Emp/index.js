@@ -41,7 +41,8 @@ class Empp extends Component {
           let _dept = list[i].deptName
           let _phone = list[i].phone
           let _email = list[i].email
-          _empList.push({ 'key': _key, 'name': _name, 'age': _age, 'sex': _sex, 'card': _card, 'jobName': _jobName, 'dept': _dept, 'phone': _phone, 'email': _email })
+          let _status = list[i].status
+          _empList.push({ 'key': _key, 'name': _name, 'age': _age, 'sex': _sex, 'card': _card, 'jobName': _jobName, 'dept': _dept, 'phone': _phone, 'email': _email, 'status':_status })
         }
         this.setState({ dataSource: _empList })
       } else {
@@ -227,6 +228,10 @@ class Empp extends Component {
         title: '邮箱',
         dataIndex: 'email',
         key: 'email',
+      }, {
+        title: '在职状态',
+        dataIndex: 'status',
+        key: 'status',
       }, {
         title: '操作',
         key: 'action',

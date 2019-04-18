@@ -40,6 +40,7 @@ class ContentMain extends Component {
 
                 <Route exact path="/Attendance" component={Attendance}/>
 
+
                 <Route exact path="/HumanResource/InfoPublish" component={InfoPublish}/>
                 <Route exact path="/HumanResource/InfoSearch" component={InfoSearch}/>
 

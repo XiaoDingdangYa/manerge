@@ -52,8 +52,8 @@ export default{
     },
     
     //10.添加角色
-    createRole:params => {
-        return axios.post(`${_baseUrl}/api/role/create`,qs.stringify(params)).then(res=>res.data)
+    getPersonAttend:params => {
+        return axios.get(`${_baseUrl}/api/role/create`,{params:params}).then(res=>res.data)
     },
 
      //11.更新角色

@@ -1,10 +1,10 @@
 import React,{Component} from './node_modules/react';
-import { Table,message } from './node_modules/antd';
+import { Table,Input,message } from './node_modules/antd';
 import {withRouter} from "./node_modules/react-router-dom";
-import api from '../../api/api';
+import api from '../../../api/api';
 
 
-class Attendance extends Component {
+class Detail extends Component {
     constructor(props) {
         super(props);
         this.state={
@@ -106,4 +106,4 @@ class Attendance extends Component {
 }
 
 
-export default withRouter(Attendance);
+export default withRouter(Detail);

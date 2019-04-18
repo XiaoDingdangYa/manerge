@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import { Table, Button, Input, Divider, message,Form,Modal,Popconfirm,notification,Icon } from 'antd';
 import {withRouter} from "react-router-dom";
-import api from './../../api/api';
+import api from '../../api/api';
 
 const Search = Input.Search;
 
@@ -64,7 +64,7 @@ class Departmentt extends Component {
 
     //删除部门信息
     delete = (record) => {
-      console.log(record)
+      //console.log(record)
       var params = {
         deptId: record.key,
       }

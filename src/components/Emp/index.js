@@ -1,4 +1,4 @@
-import { Button, Divider, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Table } from 'antd';
+import { Button, Divider, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Table, Tag } from 'antd';
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import api from './../../api/api';
@@ -11,7 +11,8 @@ class Empp extends Component {
     super(props);
     this.state = {
       dataSource: [],//个人信息
-      visible: false
+      visible: false,
+      formSouece:[]
     }
   }
 
@@ -42,6 +43,11 @@ class Empp extends Component {
           let _phone = list[i].phone
           let _email = list[i].email
           let _status = list[i].status
+          if(_status == 0){
+            _status = '在职'
+          } else{
+            _status = '离职'
+          }
           _empList.push({ 'key': _key, 'name': _name, 'age': _age, 'sex': _sex, 'card': _card, 'jobName': _jobName, 'dept': _dept, 'phone': _phone, 'email': _email, 'status':_status })
         }
         this.setState({ dataSource: _empList })
@@ -168,6 +174,7 @@ class Empp extends Component {
   //编辑员工信息
   edit = (record) => {
     console.log(record)
+    //this.setState({ visible: true })
   }
 
   //删除员工信息
@@ -176,14 +183,18 @@ class Empp extends Component {
     var params = {
       empId: record.key,
     }
-    api.deleteEmp(params).then(res =>{
-      //console.log(res);
-     if(res.code == 0){
-      message.success('删除成功！');
-     }else{
-       message.error('');
-     }
-   })
+    if(record.status=='离职'){
+      api.deleteEmp(params).then(res =>{
+        //console.log(res);
+      if(res.code == 0){
+        message.success('删除成功！');
+      }else{
+        message.error('删除失败！');
+      }
+    })
+  }else{
+    message.error('该员工属于在职状态，无法删除其资料！');
+  }
 
   }
 
@@ -232,6 +243,15 @@ class Empp extends Component {
         title: '在职状态',
         dataIndex: 'status',
         key: 'status',
+        render:(tag) => (
+          tag=='在职'?
+          <span>          
+            <Tag color="green" key={tag}>{tag}</Tag>
+          </span>
+          :<span>          
+          <Tag color="gray" key={tag}>{tag}</Tag>
+          </span>
+        )
       }, {
         title: '操作',
         key: 'action',
@@ -278,7 +298,9 @@ class Empp extends Component {
                 rules: [{
                   required: true, message: '请输入姓名!',
                 }],
-              })(
+                initialValue: '张三' ||''
+              }
+              )(
                 <Input type="text" style={{ width: 120 }} />
               )}
             </Form.Item>

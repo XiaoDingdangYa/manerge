@@ -1,7 +1,7 @@
-import React,{Component} from './node_modules/react';
-import { Table,message } from './node_modules/antd';
-import {withRouter} from "./node_modules/react-router-dom";
-import api from '../../api/api';
+import React,{Component} from 'react';
+import { Table,message } from 'antd';
+import {withRouter, Link} from "react-router-dom";
+import api from './../../api/api';
 
 
 class Attendance extends Component {
@@ -93,8 +93,7 @@ class Attendance extends Component {
         key: 'action',
         render: (text, record) => (
             <span>
-              <Link to={{pathname:'./Detail',query:{key:record.key}}}>签到明细</Link>
-              
+              <Link to={{pathname:'./Detail',query:{key:record.key}}}>签到明细</Link>              
             </span>
           ),
       }];

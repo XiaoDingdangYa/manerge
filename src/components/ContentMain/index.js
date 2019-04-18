@@ -7,7 +7,7 @@ const PersonAttendance = LoadableComponent(()=>import('../User/PersonAttendance'
 
 const Department = LoadableComponent(()=>import('../Department'))
 
-const Attendance = LoadableComponent(()=>import('../Attendance'))
+const Attendance = LoadableComponent(()=>import('../Attendance/index'))
 
 const InfoPublish = LoadableComponent(()=>import('../HumanResource/InfoPublish'))
 const InfoSearch = LoadableComponent(()=>import('../HumanResource/InfoSearch'))
@@ -38,7 +38,7 @@ class ContentMain extends Component {
 
                 <Route exact path="/Department" component={Department}/>
 
-                <Route exact path="/Attendance" component={Attendance}/>
+                <Route exact path="/Attendance/index" component={Attendance}/>
 
 
                 <Route exact path="/HumanResource/InfoPublish" component={InfoPublish}/>

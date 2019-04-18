@@ -1,6 +1,6 @@
-import React,{Component} from './node_modules/react';
-import { Table,Input,message } from './node_modules/antd';
-import {withRouter} from "./node_modules/react-router-dom";
+import React,{Component} from 'react';
+import { Table,Input,message } from 'antd';
+import {withRouter} from "react-router-dom";
 import api from '../../../api/api';
 
 class PersonAttendance extends Component {

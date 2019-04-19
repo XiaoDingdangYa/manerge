@@ -55,8 +55,7 @@ class Sidebar extends Component {
   getUserMenuList(){
      var list=this.props.data;
      //console.log(list)
-     var _usermenuList=[];
-     var _userUrl=[];
+     var _usermenuList=[]; 
         for(let i=0;i<list.length;i++){
           let _userchildMenuList=list[i].childrenMenu
           let _name=list[i].menuName;
@@ -70,11 +69,9 @@ class Sidebar extends Component {
           }else{
              _changeIcon={id:_id,value:'false'};
           }
-          let _parent_id=list[i].parentId;
-          _userUrl.push({'urk':_redirect_url})
+          let _parent_id=list[i].parentId;         
           _usermenuList.push({'changeIcon':_changeIcon,'userchildMenuList':_userchildMenuList,'name':_name,'redirect_url':_redirect_url,'icon_url':_icon_url,'id':_id,'parent_id':_parent_id,'log':_log});
-        }
-        sessionStorage.setItem("url",_userUrl);  
+        } 
           return _usermenuList;
   }
 
@@ -139,6 +136,7 @@ class Sidebar extends Component {
   render() {
     var loading=this.props.loading;
     var usermenuList;
+    var userUrl=[];
     const {openKeys, selectedKeys} = this.state
     if(this.state.usermenuList.length){
       usermenuList=this.state.usermenuList;
@@ -156,6 +154,10 @@ class Sidebar extends Component {
         <Link to={item.menuURL}><span>{item.menuName}</span></Link>
        </Menu.Item>
         ));
+        usermenuList[i].userchildMenuList.map((item,index) =>
+        userUrl.push({'url':item.menuURL})
+        );
+        sessionStorage.setItem("url",JSON.stringify(userUrl)); 
       }else{
         userchildmenu.push();
       }

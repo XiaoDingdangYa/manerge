@@ -30,7 +30,7 @@ class Empp extends Component {
       //console.log(res);
       if (res.code == 0) {
         let list = res.content;
-        console.log(list)
+        //console.log(list)
         var _empList = [];
         for (let i = 0; i < list.length; i++) {
           let _key = list[i].empId

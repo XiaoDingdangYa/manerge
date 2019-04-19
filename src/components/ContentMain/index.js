@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Route,Switch } from 'react-router-dom';
+import {Route,Switch,withRouter,Redirect } from 'react-router-dom';
 import LoadableComponent from '../../utils/LoadableComponent'
 
 const PersonInfo = LoadableComponent(()=>import('../User/PersonInfo'))
@@ -16,6 +16,9 @@ const Emp = LoadableComponent(()=>import('../Emp'))
 
 const Permission = LoadableComponent(()=>import('../Permission'))
 
+const routerEnter = LoadableComponent(()=>import('../404'))
+
+
 
 
 
@@ -30,6 +33,12 @@ class ContentMain extends Component {
     componentWillMount(){
         var _url = sessionStorage.getItem("url")
         console.log(_url)
+        var url = this.props.location.pathname
+        //console.log(url)
+        if(url!=='/Home'){
+             this.props.history.push({pathname:'/404'})
+            
+        }
     }
 
     render() {
@@ -49,12 +58,14 @@ class ContentMain extends Component {
                 <Route exact path="/Emp" component={Emp}/>
 
                 <Route exact path="/Permission" component={Permission}/>
+                
+                <Route exact path="/404" component={routerEnter}/>
 
                 </Switch>            
         )
     }
 }
 
-export default ContentMain;
+export default withRouter(ContentMain);
 
 

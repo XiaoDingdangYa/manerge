@@ -99,7 +99,7 @@ class Home extends Component {
                  collapsible
                  trigger={null}
                  collapsed={this.state.collapsed}>
-              <Sidebar data={this.state.usermenuList} loading={this.state.loading} userName={_user}/>
+              <Sidebar data={this.state.usermenuList} loading={this.state.loading} />
             </Sider>
             <Layout>
               <Header style={{background: '#fff', padding: '0 16px'}}>

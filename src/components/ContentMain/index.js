@@ -27,7 +27,9 @@ class ContentMain extends Component {
         }
       }
     
-    componentDidMount(){
+    componentWillMount(){
+        var _url = sessionStorage.getItem("url")
+        console.log(_url)
     }
 
     render() {

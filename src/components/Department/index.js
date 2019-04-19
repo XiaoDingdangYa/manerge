@@ -12,6 +12,7 @@ class Departmentt extends Component {
         this.state={
             dataSource:[],//部门信息数组
             visible:false,
+            formSource:[]
         }
       }
     
@@ -47,8 +48,13 @@ class Departmentt extends Component {
 
     search = (value)=>{
       var teacherList
-      teacherList = this.state.dataSource.filter(array => array.name.match(value));
-      this.setState({dataSource:teacherList})
+      if(value){
+        teacherList = this.state.dataSource.filter(array => array.name.match(value));
+        this.setState({dataSource:teacherList})
+      }else{
+        this.getDeptInfo()
+      }
+      
     }
 
     componentWillUnmount = () => {
@@ -60,6 +66,10 @@ class Departmentt extends Component {
     //编辑部门信息
     edit = (record) => {
       console.log(record)
+      this.setState({
+        formSource:record,
+        visible: true
+      })
     }
 
     //删除部门信息
@@ -80,14 +90,14 @@ class Departmentt extends Component {
          if(res.code == 0){
           message.success('删除成功！');
          }else{
-           message.error('');
+           message.error('删除失败！');
          }
        })
       }
     }
 
  render(){
-   const {dataSource} = this.state
+   const {dataSource,formSource} = this.state
    const { getFieldDecorator } = this.props.form;
    const { TextArea } = Input;
     const columns = [ 
@@ -120,7 +130,7 @@ class Departmentt extends Component {
      return(
          <div>
              <div style={{marginBottom:20}}>
-             <Button type="primary" icon="plus-circle" style={{float:'left',marginLeft:20,marginTop:5}} onClick={() =>this.setState({visible:true})}>新增部门</Button>
+             <Button type="primary" icon="plus-circle" style={{float:'left',marginLeft:20,marginTop:5}} onClick={() =>this.setState({visible:true,formSouece:[]})}>新增部门</Button>
                 <Search
                     placeholder="部门名称"
                     enterButton="搜索"
@@ -145,6 +155,7 @@ class Departmentt extends Component {
               rules: [{
                 required: true, message: '请输入部门名称!',
               }],
+              initialValue: formSource.name ||''              
             })(
               <Input type="text" style={{ width: 120 }}/>
             )}
@@ -156,6 +167,7 @@ class Departmentt extends Component {
               rules: [{
                 required: true, message: '请输入部门描述!',
               }],
+              initialValue: formSource.remark ||''
             })(
               <TextArea rows={4} />
             )}

@@ -1,4 +1,4 @@
-import { Button, Divider, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Table, Tag } from 'antd';
+import { Button, Divider, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Table, Tag, Radio } from 'antd';
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import api from './../../api/api';
@@ -12,7 +12,7 @@ class Empp extends Component {
     this.state = {
       dataSource: [],//个人信息
       visible: false,
-      formSouece:[]
+      formSource:[]
     }
   }
 
@@ -167,14 +167,23 @@ class Empp extends Component {
   //员工信息搜索
   search = (value) => {
     var teacherList
-    teacherList = this.state.dataSource.filter(array => array.name.match(value));
-    this.setState({ dataSource: teacherList })
+    if (value) {
+      teacherList = this.state.dataSource.filter(array => array.name.match(value));
+      this.setState({ dataSource: teacherList })
+    }else{
+      this.getEmpInfo()
+    }
+    
   }
 
   //编辑员工信息
   edit = (record) => {
     console.log(record)
-    //this.setState({ visible: true })
+    this.setState({
+      formSource:record,
+      visible: true
+    })
+    
   }
 
   //删除员工信息
@@ -201,7 +210,7 @@ class Empp extends Component {
 
 
   render() {
-    const { dataSource } = this.state
+    const { dataSource,formSource } = this.state
     const Search = Input.Search;
     const Option = Select.Option;
     const columns = [
@@ -272,7 +281,7 @@ class Empp extends Component {
     return (
       <div>
         <div style={{ marginBottom: 20 }}>
-          <Button type="primary" icon="plus-circle" style={{ float: 'left', marginLeft: 10, marginTop: 5 }} onClick={() => this.setState({ visible: true })}>新增员工</Button>
+          <Button type="primary" icon="plus-circle" style={{ float: 'left', marginLeft: 10, marginTop: 5 }} onClick={() => this.setState({ visible: true,formSource:[] })}>新增员工</Button>
 
           <Search
             placeholder="员工姓名"
@@ -298,7 +307,7 @@ class Empp extends Component {
                 rules: [{
                   required: true, message: '请输入姓名!',
                 }],
-                initialValue: '张三' ||''
+                initialValue: formSource.name ||''
               }
               )(
                 <Input type="text" style={{ width: 120 }} />
@@ -311,6 +320,7 @@ class Empp extends Component {
                 rules: [{
                   required: true, message: '请输入年龄!',
                 }],
+                initialValue: formSource.age ||''
               })(
                 <InputNumber />
               )}
@@ -318,10 +328,18 @@ class Empp extends Component {
             <Form.Item
               label="性别"
             >
-              <Select style={{ width: 120 }}>
-                <Option value="man">男</Option>
-                <Option value="women">女</Option>
-              </Select>
+            {getFieldDecorator('sex', {
+                rules: [{
+                  required: true, message: '请选择性别!',
+                }],
+                initialValue: formSource.sex ||''
+              })(
+                <Radio.Group>
+                <Radio value="男">男</Radio>
+                <Radio value="女">女</Radio>
+              </Radio.Group>
+              )}
+              
             </Form.Item>
             <Form.Item
               label="身份证号"
@@ -332,8 +350,9 @@ class Empp extends Component {
                 }, {
                   validator: this.isIdCardNo,
                 }],
+                initialValue: formSource.card ||''
               })(
-                <Input type="text" style={{ width: 120 }} />
+                <Input type="text" style={{ width: 200 }} />
               )}
             </Form.Item>
             <Form.Item
@@ -380,6 +399,7 @@ class Empp extends Component {
                 }, {
                   validator: this.isPhone,
                 }],
+                initialValue: formSource.phone ||''
               })(
                 <Input type="number" style={{ width: 120 }} />
               )}
@@ -391,8 +411,9 @@ class Empp extends Component {
                 rules: [{
                   required: true, message: '请填写邮箱!',
                 }],
+                initialValue: formSource.email ||''
               })(
-                <Input type="email" style={{ width: 120 }} />
+                <Input type="email" style={{ width: 180 }} />
               )}
             </Form.Item>
           </Form>

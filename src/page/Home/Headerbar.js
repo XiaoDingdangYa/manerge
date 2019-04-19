@@ -30,8 +30,10 @@ class Header extends Component {
 
   componentDidMount(){
     var _user = this.props.userName;
+    if(_user){
       _user = JSON.parse( _user).userName;
     this.setState({user:_user})
+    }
     screenfull.onchange(() => {
       this.setState({
         icon: screenfull.isFullscreen ? 'shrink' : 'arrows-alt'
@@ -63,6 +65,7 @@ class Header extends Component {
         console.log(_this.props)
         _this.props.history.push({pathname:'/login'})
         sessionStorage.removeItem("user");
+        sessionStorage.removeItem("url");
       },
     });
   }

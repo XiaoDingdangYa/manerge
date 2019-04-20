@@ -22,6 +22,7 @@ class Attendance extends Component {
       for (let i = 0; i < _url.length; i++) {
         if (_url[i].url == url) {
           statu = true
+          break
         }else{
           statu = false
         }          

@@ -15,13 +15,14 @@ class PersonInfo extends Component {
     componentWillMount(){
       var _url = sessionStorage.getItem("url")
       _url = JSON.parse( _url )
-      //console.log(_url[0].url)
+      console.log(_url)
       var url = this.props.location.pathname
-      //console.log(url)
+      console.log(url)
       var statu = true
       for (let i = 0; i < _url.length; i++) {
         if (_url[i].url == url) {
           statu = true
+          break
         }else{
           statu = false
         }          

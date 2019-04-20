@@ -1,6 +1,6 @@
-import React,{Component} from './node_modules/react';
-import { Table,Input,message } from './node_modules/antd';
-import {withRouter} from "./node_modules/react-router-dom";
+import React,{Component} from 'react';
+import { Table,message } from 'antd';
+import {withRouter} from "react-router-dom";
 import api from '../../../api/api';
 
 
@@ -11,6 +11,26 @@ class Detail extends Component {
           dataSource:[],//考勤信息
         }
       }
+
+    componentWillMount(){
+      var _url = sessionStorage.getItem("url")
+      _url = JSON.parse( _url )
+      //console.log(_url[0].url)
+      var url = this.props.location.pathname
+      //console.log(url)
+      var statu = true
+      for (let i = 0; i < _url.length; i++) {
+        if (_url[i].url == url) {
+          statu = true
+        }else{
+          statu = false
+        }          
+      }
+      if(statu==false){
+        this.props.history.push({pathname:'/404'});
+          
+      }
+    }
 
     componentDidMount(){
       var _user = sessionStorage.getItem("user");
@@ -50,13 +70,6 @@ class Detail extends Component {
          })
     }
 
-    detail = (record) => {
-      console.log(record)
-      var params = {
-        userId: record.key,
-      }
-    }
-
     componentWillUnmount = () => {
       this.setState = (state,callback)=>{
         return;
@@ -88,15 +101,6 @@ class Detail extends Component {
         title: '缺勤',
         dataIndex: 'down',
         key: 'down',
-      },{
-        title: '操作',
-        key: 'action',
-        render: (text, record) => (
-            <span>
-              <Link to={{pathname:'./Detail',query:{key:record.key}}}>签到明细</Link>
-              
-            </span>
-          ),
       }];
       
      return(

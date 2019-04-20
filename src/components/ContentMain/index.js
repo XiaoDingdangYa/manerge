@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Route,Switch,withRouter,Redirect } from 'react-router-dom';
+import {Route,Switch,withRouter } from 'react-router-dom';
 import LoadableComponent from '../../utils/LoadableComponent'
 
 const PersonInfo = LoadableComponent(()=>import('../User/PersonInfo'))
@@ -8,6 +8,7 @@ const PersonAttendance = LoadableComponent(()=>import('../User/PersonAttendance'
 const Department = LoadableComponent(()=>import('../Department'))
 
 const Attendance = LoadableComponent(()=>import('../Attendance/index'))
+const Detail = LoadableComponent(()=>import('../Attendance/Detail'))
 
 const InfoPublish = LoadableComponent(()=>import('../HumanResource/InfoPublish'))
 const InfoSearch = LoadableComponent(()=>import('../HumanResource/InfoSearch'))
@@ -30,16 +31,7 @@ class ContentMain extends Component {
         }
       }
     
-    componentWillMount(){
-        var _url = sessionStorage.getItem("url")
-        console.log(_url)
-        var url = this.props.location.pathname
-        //console.log(url)
-        if(url!=='/Home'){
-             this.props.history.push({pathname:'/404'})
-            
-        }
-    }
+
 
     render() {
         return (
@@ -50,6 +42,7 @@ class ContentMain extends Component {
                 <Route exact path="/Department" component={Department}/>
 
                 <Route exact path="/Attendance/index" component={Attendance}/>
+                <Route exact path="/Attendance/Detail" component={Detail}/>
 
 
                 <Route exact path="/HumanResource/InfoPublish" component={InfoPublish}/>

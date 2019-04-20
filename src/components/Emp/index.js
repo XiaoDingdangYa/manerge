@@ -16,6 +16,26 @@ class Empp extends Component {
     }
   }
 
+  componentWillMount(){
+    var _url = sessionStorage.getItem("url")
+    _url = JSON.parse( _url )
+    //console.log(_url[0].url)
+    var url = this.props.location.pathname
+    //console.log(url)
+    var statu = true
+    for (let i = 0; i < _url.length; i++) {
+      if (_url[i].url == url) {
+        statu = true
+      }else{
+        statu = false
+      }          
+    }
+    if(statu==false){
+      this.props.history.push({pathname:'/404'});
+        
+    }
+  }
+
   componentDidMount() {
     var _user = sessionStorage.getItem("user");
     //console.log(_user)

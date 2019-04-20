@@ -29,6 +29,8 @@ class Home extends Component {
          //console.log('未登录，将返回登录页面')
         this.props.history.push({pathname:'/Login'});
        }
+
+       
     
    
 

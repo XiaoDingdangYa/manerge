@@ -66,6 +66,8 @@ class Header extends Component {
         _this.props.history.push({pathname:'/login'})
         sessionStorage.removeItem("user");
         sessionStorage.removeItem("url");
+        sessionStorage.removeItem("openke");
+        sessionStorage.removeItem("selectedke");
       },
     });
   }

@@ -10,14 +10,26 @@ class Form11 extends Component {
 
         };
       }
+      
 
 
     render(){
         const { getFieldDecorator } = this.props.form;
+
+        const formItemLayout = {
+            labelCol: {
+              xs: { span: 24 },
+              sm: { span: 5 },
+            },
+            wrapperCol: {
+              xs: { span: 24 },
+              sm: { span: 12 },
+            },
+          };
         return(
             <div style={{padding:20}}>
                 <h1>1.职位基本信息</h1>
-                <Form onSubmit={this.handleSubmit}>
+                <Form {...formItemLayout} onSubmit={this.handleSubmit}>
                     <Form.Item
                     label="公司"
                     >
@@ -26,7 +38,7 @@ class Form11 extends Component {
                         required: true, message: 'Please input your company!',
                         }],
                     })(
-                        <Input style={{width:600}} />
+                        <Input style={{width:'40%'}} />
                     )}
                     </Form.Item>
                 </Form>

@@ -43,7 +43,7 @@ export default{
 
     //8.删除部门
     deleteDept:params => {
-        return axios.post(`${_baseUrl}/api/dept/del`,qs.stringify(params)).then(res=>res.data)
+        return axios.post(`${_baseUrl}/dept/del`,qs.stringify(params)).then(res=>res.data)
     },
 
     //9.打卡
@@ -51,53 +51,49 @@ export default{
         return axios.get(`${_baseUrl}/attend/add`,{params:params}).then(res=>res.data)
     },
     
-    //10.添加角色
-    getPersonAttend:params => {
-        return axios.get(`${_baseUrl}/api/role/create`,{params:params}).then(res=>res.data)
+    //10.权限角色
+    getRole:params => {
+        return axios.get(`${_baseUrl}/power/all`).then(res=>res.data)
     },
 
-     //11.更新角色
-     updateRole:params => {
-        return axios.post(`${_baseUrl}/api/role/update`,qs.stringify(params)).then(res=>res.data)
+     //11.对应角色用户
+     getRoleuser:params => {
+        return axios.get(`${_baseUrl}/power/select`,{params:params}).then(res=>res.data)
     },
 
     //12.删除角色
     deleteRole:params => {
-        return axios.post(`${_baseUrl}/api/role/delete`,qs.stringify(params)).then(res=>res.data)
+        return axios.get(`${_baseUrl}/power/del`,{params:params}).then(res=>res.data)
     },
 
-    //13.角色权限列表
-    getPrivilegeList:params => {
-        return axios.get(`${_baseUrl}/api/role/privilege/list`,{params:params}).then(res=>res.data)
+    //13.未授权角色列表
+    addUser:params => {
+        return axios.get(`${_baseUrl}/power/user`,{params:params}).then(res=>res.data)
     },
 
-    //14.角色用户列表
-    getUserRoleList:params => {
-        return axios.get(`${_baseUrl}/api/role/user/list`,{params:params}).then(res=>res.data)
+    //14.新增权限角色
+    addRole:params => {
+        return axios.get(`${_baseUrl}/power/insert`,{params:params}).then(res=>res.data)
     },
 
-    //15.添加角色用户关联
-    createUserRole:params => {
-        return axios.post(`${_baseUrl}/api/role/user/create`,qs.stringify(params)).then(res=>res.data)
+    //15.修改部门信息
+    addDept:params => {
+        return axios.post(`${_baseUrl}/dept/insert`,qs.stringify(params)).then(res=>res.data)
     },
 
-    //16.删除角色用户关联
-    deleteUserRole:params => {
-        return axios.post(`${_baseUrl}/api/role/user/delete`,qs.stringify(params)).then(res=>res.data)
+    //16.个人考勤信息
+    getUserAttend:params => {
+        return axios.get(`${_baseUrl}/attend/info`,{params:params}).then(res=>res.data)
     },
 
-    //17.更新角色权限关联
-    updateUserRole:params => {
-        return axios.post(`${_baseUrl}/api/role/privilege/update`,qs.stringify(params)).then(res=>res.data)
+    //17.考勤统计信息
+    getAllAttend:() => {
+        return axios.get(`${_baseUrl}/attend/all`).then(res=>res.data)
     },
 
-    //18.上传图片
-    upload:params => {
-        return axios.post(`${_baseUrl}/api/upload/image`,qs.stringify(params)).then(res=>res.data)
+    //18.调用是否存在当日打卡信息
+    attendExist:params => {
+        return axios.get(`${_baseUrl}/attend/exist`,{params:params}).then(res=>res.data)
     },
-
-    //18.退出登录
-    logout:params => {
-        return axios.post(`${_baseUrl}/api/user/logout`,qs.stringify(params)).then(res=>res.data)
-    },
+    
 }

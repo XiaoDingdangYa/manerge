@@ -7,7 +7,7 @@ const PersonAttendance = LoadableComponent(()=>import('../User/PersonAttendance'
 
 const Department = LoadableComponent(()=>import('../Department'))
 
-const Attendance = LoadableComponent(()=>import('../Attendance/index'))
+const Attendance = LoadableComponent(()=>import('../Attendance'))
 const Detail = LoadableComponent(()=>import('../Attendance/Detail'))
 
 const InfoPublish = LoadableComponent(()=>import('../HumanResource/InfoPublish'))
@@ -16,6 +16,7 @@ const InfoSearch = LoadableComponent(()=>import('../HumanResource/InfoSearch'))
 const Emp = LoadableComponent(()=>import('../Emp'))
 
 const Permission = LoadableComponent(()=>import('../Permission'))
+const AddRole = LoadableComponent(()=>import('../Permission/AddRole'))
 
 const routerEnter = LoadableComponent(()=>import('../404'))
 
@@ -41,7 +42,7 @@ class ContentMain extends Component {
 
                 <Route exact path="/Department" component={Department}/>
 
-                <Route exact path="/Attendance/index" component={Attendance}/>
+                <Route exact path="/Attendance" component={Attendance}/>
                 <Route exact path="/Attendance/Detail" component={Detail}/>
 
 
@@ -51,6 +52,7 @@ class ContentMain extends Component {
                 <Route exact path="/Emp" component={Emp}/>
 
                 <Route exact path="/Permission" component={Permission}/>
+                <Route exact path="/Permission/AddRole" component={AddRole}/>
                 
                 <Route exact path="/404" component={routerEnter}/>
 

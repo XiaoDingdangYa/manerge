@@ -95,7 +95,7 @@ class Departmentt extends Component {
 
     //删除部门信息
     delete = (record) => {
-      //console.log(record)
+      console.log(record)
       var params = {
         deptId: record.key,
       }
@@ -110,6 +110,9 @@ class Departmentt extends Component {
           //console.log(res);
          if(res.code == 0){
           message.success('删除成功！');
+          setTimeout(() => {
+            window.location.reload(true);
+          }, 1500);
          }else{
            message.error('删除失败！');
          }
@@ -117,12 +120,41 @@ class Departmentt extends Component {
       }
     }
 
+    handleSubmit = (e) => {
+      e.preventDefault();
+      this.props.form.validateFields((err, values) => {
+        if (!err) {
+          console.log(values)
+          var params = {
+            deptId:values.key,
+            deptName:values.name,
+            deptRemark:values.remark
+          };  
+          api.addDept(params).then(res =>{
+             //console.log(res);
+            if(res.code == 0){
+              message.success('提交成功！')
+              setTimeout(() => {
+                window.location.reload(true);
+              }, 1500);
+            }else{
+              message.error(res.err);
+            }
+          })
+        }
+      });
+    }
+
  render(){
-   const {dataSource,formSource} = this.state
+   const {dataSource,formSource,visible} = this.state
    const { getFieldDecorator } = this.props.form;
    const { TextArea } = Input;
     const columns = [ 
-      {
+    {
+      title: 'ID', 
+      dataIndex: 'key', 
+      key: 'key', 
+      },{
       title: '部门名称', 
       dataIndex: 'name', 
       key: 'name', 
@@ -162,39 +194,51 @@ class Departmentt extends Component {
             </div>
             <Table columns={columns} dataSource={dataSource} style={{clear:'both'}}/>
 
-            <Modal
-            title="部门信息录入"
-            visible={this.state.visible}
+  {visible&&<Modal
+            title="部门信息"
+            visible={visible}
             wrapClassName="vertical-center-modal"
-            okText="保存"
-            cancelText="取消"
-            onCancel={() => this.setState({visible: false})}>
-        <Form onSubmit={this.handleSubmit}>
-          <Form.Item
-          label="部门名称">
-          {getFieldDecorator('name', {
-              rules: [{
-                required: true, message: '请输入部门名称!',
-              }],
-              initialValue: formSource.name ||''              
-            })(
-              <Input type="text" style={{ width: 120 }}/>
-            )}
-          </Form.Item>
-          <Form.Item
-            label="部门描述"
-          >
-            {getFieldDecorator('remark', {
-              rules: [{
-                required: true, message: '请输入部门描述!',
-              }],
-              initialValue: formSource.remark ||''
-            })(
-              <TextArea rows={4} />
-            )}
-          </Form.Item>
-         </Form>
+            footer={null}
+            onCancel={() => this.setState({visible: false,formSource:[]})}>
+          <Form onSubmit={this.handleSubmit}>
+            <Form.Item label="ID" style={{display:'none'}}>
+            {getFieldDecorator('key', {
+                initialValue: formSource.key ||''              
+              })(
+                <Input type="text" style={{ width: 120 }} />
+              )}
+            </Form.Item>
+            <Form.Item
+            label="部门名称">
+            {getFieldDecorator('name', {
+                rules: [{
+                  required: true, message: '请输入部门名称!',
+                }],
+                initialValue: formSource.name ||''              
+              })(
+                <Input type="text" style={{ width: 120 }}/>
+              )}
+            </Form.Item>
+            <Form.Item
+              label="部门描述"
+            >
+              {getFieldDecorator('remark', {
+                rules: [{
+                  required: true, message: '请输入部门描述!',
+                }],
+                initialValue: formSource.remark ||''
+              })(
+                <TextArea rows={4} />
+              )}
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" style={{float:'right'}}>
+                     保存
+              </Button>
+            </Form.Item>
+          </Form>
       </Modal>
+  }
         </div>
      )
  }

@@ -38,7 +38,6 @@ class Home extends Component {
 
   componentDidMount(){
     var _user = sessionStorage.getItem("user");
-    //console.log(_user)
     if( _user){
         this.getUserMenuList();
     }
@@ -62,7 +61,7 @@ class Home extends Component {
     userId:_user.userId
     }
     apis.getUserMenuList(params).then(res => {
-       //console.log(res);
+      // console.log(res);
       if(res.code == 0){
         let list=res.content;
         _this.setState({usermenuList:list,loading:false});

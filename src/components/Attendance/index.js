@@ -9,6 +9,7 @@ class Attendance extends Component {
         super(props);
         this.state={
           dataSource:[],//考勤信息
+          userId:JSON.parse(sessionStorage.getItem("user")).userId
         }
       }
 
@@ -34,33 +35,29 @@ class Attendance extends Component {
     }
 
     componentDidMount(){
-      var _user = sessionStorage.getItem("user");
-      //console.log(_user)
+      var _user = JSON.parse(sessionStorage.getItem("user"));
+      
       if( _user){
           this.getUserInfo();
       }
     }      
 
     getUserInfo(){
-        var _user = sessionStorage.getItem("user");   
-        //console.log(JSON.parse( _user).userId)
-        var params = {
-          userId: JSON.parse( _user).userId,
-        }
-        api.getPersonAttend(params).then(res => {
-            //console.log(res);
+        api.getAllAttend().then(res => {
+            console.log(res);
            if(res.code == 0){
              let list=res.content;
              console.log(list)
              var _attendList=[];
              for(let i=0;i<list.length;i++){
-               let _key = list.empId
-               let _name = list.empName
-               let _dept = list.deptName
-               let _position = list.jobName
-               let _up = list.up
-               let _down = list.down
-               _attendList.push({'key':_key,'user':_user,'name':_name,'dept':_dept,'position':_position,'up':_up,'down':_down})
+               let _key = list[i].userId
+               let _user = list[i].userName
+               let _name = list[i].empName
+               let _dept = list[i].deptName
+               let _position = list[i].jobName
+               let _attend = list[i].attend
+               let _absence = list[i].absence
+               _attendList.push({'key':_key,'user':_user,'name':_name,'dept':_dept,'position':_position,'attend':_attend,'absence':_absence})
             }
              //console.log(_userList)
              this.setState({dataSource:_attendList})
@@ -94,6 +91,10 @@ class Attendance extends Component {
       dataIndex: 'name', 
       key: 'name', 
       },{
+        title: '账号',
+        dataIndex: 'user',
+        key: 'user',
+      },{
         title: '部门',
         dataIndex: 'dept',
         key: 'dept',
@@ -103,18 +104,18 @@ class Attendance extends Component {
         key: 'position',
       },{
         title: '出勤',
-        dataIndex: 'up',
-        key: 'up',
+        dataIndex: 'attend',
+        key: 'attend',
       },{
         title: '缺勤',
-        dataIndex: 'down',
-        key: 'down',
+        dataIndex: 'absence',
+        key: 'absence',
       },{
         title: '操作',
         key: 'action',
         render: (text, record) => (
             <span>
-              <Link to={{pathname:'./Detail',query:{key:record.key}}}>签到明细</Link>              
+              <Link to={{pathname:"/Attendance/Detail", search: '?user='+record.key  }}>签到明细</Link>          
             </span>
           ),
       }];

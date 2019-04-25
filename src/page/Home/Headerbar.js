@@ -12,6 +12,7 @@ class Header extends Component {
     super(props);
     this.state={
       user:'',
+      userId:'',
       user_image:'',//用户头像
       icon: 'arrows-alt',
       count: 100,
@@ -30,9 +31,12 @@ class Header extends Component {
 
   componentDidMount(){
     var _user = this.props.userName;
+    var _userId;
+    var _userName;
     if(_user){
-      _user = JSON.parse( _user).userName;
-    this.setState({user:_user})
+      _userName = JSON.parse( _user).userName;
+      _userId = JSON.parse( _user).userId;
+    this.setState({user:_userName,userId:_userId})
     }
     screenfull.onchange(() => {
       this.setState({
@@ -129,9 +133,13 @@ class Header extends Component {
 
   //调用打卡者信息
   attendance = () =>{
-    //console.log('点击了')
     this.setState({adVisible: true})
-    console.log(this.state.downdate)
+    var params ={
+      userId:this.state.userId
+    }
+    api.attendExist(params).then(res =>{
+      console.log(res)
+    })
   }
 
   //签到
@@ -219,7 +227,7 @@ class Header extends Component {
       <div style={{lineHeight: '64px', float: 'right'}}>
         <ul className='header-ul'>
           <li id="attend"> <a onClick={this.attendance}>今日打卡<i style={{fontSize:18}}><Icon type="environment" /></i> </a></li>
-          <li><Icon type={icon} onClick={this.screenfullToggle}/></li>
+          <li><Icon type={icon} onClick={this.screenfullToggle} style={{cursor:'pointer'}}/></li>
           <li onClick={() => this.setState({count: 0})}>
             <Badge count={this.state.count} overflowCount={99} style={{marginRight: -17}}>
               <Icon type="notification"/>
@@ -288,7 +296,7 @@ class Header extends Component {
         footer={null}
         onCancel={() => this.setState({adVisible: false})}>
         <ul>
-          <li><span>姓名：</span></li>
+          <li><span>姓名：{_user}</span></li>
           <li><span>当前时间：{this.state.date.toLocaleTimeString('en-US', { hour12: false })}</span></li>
           <span style={{float:'right'}}>
           <Button type='primary' style={{marginRight:10}} onClick={this.handleUp} disabled={this.state.up_disabled}>签到</Button>

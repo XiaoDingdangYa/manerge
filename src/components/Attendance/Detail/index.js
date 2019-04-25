@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import { Table,message } from 'antd';
+import { Table,message,Button } from 'antd';
 import {withRouter} from "react-router-dom";
 import api from '../../../api/api';
 
@@ -9,29 +9,11 @@ class Detail extends Component {
         super(props);
         this.state={
           dataSource:[],//考勤信息
+          id:this.props.location.search.substr(6)
         }
       }
 
-    componentWillMount(){
-      var _url = sessionStorage.getItem("url")
-      _url = JSON.parse( _url )
-      //console.log(_url[0].url)
-      var url = this.props.location.pathname
-      //console.log(url)
-      var statu = true
-      for (let i = 0; i < _url.length; i++) {
-        if (_url[i].url == url) {
-          statu = true
-          break
-        }else{
-          statu = false
-        }          
-      }
-      if(statu==false){
-        this.props.history.push({pathname:'/404'});
-          
-      }
-    }
+
 
     componentDidMount(){
       var _user = sessionStorage.getItem("user");
@@ -45,30 +27,30 @@ class Detail extends Component {
         var _user = sessionStorage.getItem("user");   
         //console.log(JSON.parse( _user).userId)
         var params = {
-          userId: JSON.parse( _user).userId,
+          userId: this.state.id,
         }
-        api.getPersonAttend(params).then(res => {
-            //console.log(res);
-           if(res.code == 0){
-             let list=res.content;
-             console.log(list)
-             var _attendList=[];
-             for(let i=0;i<list.length;i++){
-               let _key = list.empId
-               let _name = list.empName
-               let _dept = list.deptName
-               let _position = list.jobName
-               let _up = list.up
-               let _down = list.down
-               _attendList.push({'key':_key,'user':_user,'name':_name,'dept':_dept,'position':_position,'up':_up,'down':_down})
-            }
-             //console.log(_userList)
-             this.setState({dataSource:_attendList})
-           }else{
-             message.error(res.message);
-           }
-     
-         })
+        api.getUserAttend(params).then(res => {
+          console.log(res);
+         if(res.code == 0){
+           let list=res.content;
+           console.log(list)
+           var _attendList=[];
+           for(let i=0;i<list.length;i++){
+             let _key = list[i].attendId
+             let _day = list[i].attendDate
+             let _name = list[i].empName
+             let _dept = list[i].deptName
+             let _up = list[i].attentEvening
+             let _down = list[i].attentEvening
+             _attendList.push({'key':_key,'day':_day,'name':_name,'dept':_dept,'up':_up,'down':_down})
+          }
+           console.log(_attendList)
+           this.setState({dataSource:_attendList})
+         }else{
+           message.error(res.message);
+         }
+   
+       })
     }
 
     componentWillUnmount = () => {
@@ -81,8 +63,12 @@ class Detail extends Component {
 
  render(){
    const {dataSource} = this.state
-    const columns = [ 
-     {
+   const columns = [ 
+    {
+      title: '日期',
+      dataIndex: 'day',
+      key: 'day',
+      },{
       title: '姓名', 
       dataIndex: 'name', 
       key: 'name', 
@@ -91,21 +77,20 @@ class Detail extends Component {
         dataIndex: 'dept',
         key: 'dept',
       },{
-        title: '职位',
-        dataIndex: 'position',
-        key: 'position',
-      },{
-        title: '出勤',
+        title: '签到',
         dataIndex: 'up',
         key: 'up',
       },{
-        title: '缺勤',
+        title: '签退',
         dataIndex: 'down',
         key: 'down',
       }];
       
      return(
-        <Table columns={columns} dataSource={dataSource} scroll={{ x: 1300 }}/>
+        <div>
+          <Button type="primary" icon="left" style={{ float: 'left', margin: 10 }} onClick={() => this.props.history.goBack() }>返回</Button> 
+          <Table columns={columns} dataSource={dataSource} scroll={{ x: 1300 }} style={{clear:'both'}}/>
+        </div>
      )
  }
 }

@@ -12,7 +12,9 @@ class Empp extends Component {
     this.state = {
       dataSource: [],//个人信息
       visible: false,
-      formSource:[]
+      formSource:[],//当前修改员工信息
+      deptSource:[],//部门信息
+      jobSource:[]//职位信息
     }
   }
 
@@ -42,6 +44,7 @@ class Empp extends Component {
     //console.log(_user)
     if (_user) {
       this.getEmpInfo();
+      this.getDeptInfo();
     }
   }
 
@@ -79,10 +82,44 @@ class Empp extends Component {
     })
   }
 
+  //获取部门信息
+  getDeptInfo(){
+    api.getDeptInfo().then(res => {
+        console.log(res);
+       if(res.code == 0){
+         let list=res.content;
+         //console.log(list)
+         var _deptList=[];
+         for(let i=0;i<list.length;i++){
+           let _key = list[i].deptId
+           let _name = list[i].deptName
+           let _jobName = list[i].jobName
+           _deptList.push({'key':_key,'name':_name,'jobName':_jobName})
+         }
+         this.setState({deptSource:_deptList})
+       }else{
+         message.error(res.message);
+       }
+ 
+     })
+}
+
+choiceDept = (value) => {
+  for (let i = 0; i < this.state.deptSource.length; i++) {
+    if (value == this.state.deptSource[i].name) {
+      console.log(value)
+      this.setState({jobSource:this.state.deptSource[i].jobName})
+    }
+    
+  }
+}
+
+
   componentWillUnmount = () => {
     this.setState = (state, callback) => {
       return;
     };
+
   }
 
   //身份证号验证
@@ -199,7 +236,7 @@ class Empp extends Component {
 
   //编辑员工信息
   edit = (record) => {
-    console.log(record)
+    //console.log(record)
     this.setState({
       formSource:record,
       visible: true
@@ -231,7 +268,7 @@ class Empp extends Component {
 
 
   render() {
-    const { dataSource,formSource } = this.state
+    const { dataSource,formSource,visible } = this.state
     const Search = Input.Search;
     const Option = Select.Option;
     const columns = [
@@ -297,13 +334,31 @@ class Empp extends Component {
       }];
     const { getFieldDecorator } = this.props.form;
 
+    var opdept = [];
+    var opjob = [];
+    if(this.state.deptSource){
+      //console.log(this.state.deptSource)
+      opdept.push(this.state.deptSource.map((item)=>
+      <Option value={item.name} key={item.key}>{item.name}</Option>
+      )
+      )
+      
+    }
+    if(this.state.jobSource){
+      //console.log(this.state.jobSource)
+      opjob.push(this.state.jobSource.map((item)=>
+      <Option value={item} key={item}>{item}</Option>
+      )
+      )
+    }
+    
+    //console.log(formSource)
 
 
     return (
       <div>
         <div style={{ marginBottom: 20 }}>
           <Button type="primary" icon="plus-circle" style={{ float: 'left', marginLeft: 10, marginTop: 5 }} onClick={() => this.setState({ visible: true,formSource:[] })}>新增员工</Button>
-
           <Search
             placeholder="员工姓名"
             enterButton="搜索"
@@ -311,16 +366,18 @@ class Empp extends Component {
             onSearch={this.search}
             style={{ float: 'left', width: 500, marginLeft: 200 }}
           />
+          
         </div>
         <Table columns={columns} dataSource={dataSource} scroll={{ x: 1300 }} style={{ clear: 'both' }} />
 
-        <Modal
+        {visible && <Modal
           title="信息录入"
-          visible={this.state.visible}
+          visible={visible}
           wrapClassName="vertical-center-modal"
           okText="保存"
           cancelText="取消"
-          onCancel={() => this.setState({ visible: false })}>
+          onCancel={() => this.setState({ visible: false,formSource:[] })}>
+          
           <Form onSubmit={this.handleSubmit}>
             <Form.Item
               label="姓名">
@@ -383,18 +440,10 @@ class Empp extends Component {
                 rules: [{
                   required: true, message: '请选择部门!',
                 }],
+                initialValue: formSource.dept ||''
               })(
-                <Select style={{ width: 120 }}>
-                  <Option value="zhaopin">人事招聘部</Option>
-                  <Option value="rencai">人才服务部</Option>
-                  <Option value="kaoqin">考勤考核部</Option>
-                  <Option value="huanjing">环境架构部</Option>
-                  <Option value="qukuailian">区块链研究部</Option>
-                  <Option value="ai">人工智能研发部</Option>
-                  <Option value="wangluo">网络应用部</Option>
-                  <Option value="mobile">移动应用部</Option>
-                  <Option value="xitong">系统架构部</Option>
-                  <Option value="jinrong">金融事业部</Option>
+                <Select style={{ width: 160 }} onChange={this.choiceDept}>
+                  {opdept}
                 </Select>
               )}
             </Form.Item>
@@ -405,8 +454,11 @@ class Empp extends Component {
                 rules: [{
                   required: true, message: '请填写职位!',
                 }],
+                initialValue: formSource.jobName ||''
               })(
-                <Input type="text" style={{ width: 120 }} />
+                <Select style={{ width: 160 }}>
+                  {opjob}
+                </Select>
               )}
             </Form.Item>
             <Form.Item
@@ -439,6 +491,7 @@ class Empp extends Component {
             </Form.Item>
           </Form>
         </Modal>
+        }
       </div>
     )
   }

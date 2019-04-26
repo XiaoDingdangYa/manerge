@@ -15,7 +15,6 @@ class Empp extends Component {
       formSource:[],//当前修改员工信息
       deptSource:[],//部门信息
       jobSource:[],//职位信息
-      userId:JSON.parse(sessionStorage.getItem("user")).userId,
     }
   }
 
@@ -424,7 +423,7 @@ choiceDept = (value) => {
           
           <Form onSubmit={this.handleSubmit}>
           <Form.Item
-              label="姓名"
+              label="id"
               style={{display:'none'}}>
               {getFieldDecorator('key', {
                 initialValue: formSource.key ||''

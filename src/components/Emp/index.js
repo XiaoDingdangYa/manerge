@@ -14,7 +14,8 @@ class Empp extends Component {
       visible: false,
       formSource:[],//当前修改员工信息
       deptSource:[],//部门信息
-      jobSource:[]//职位信息
+      jobSource:[],//职位信息
+      userId:JSON.parse(sessionStorage.getItem("user")).userId,
     }
   }
 
@@ -51,7 +52,7 @@ class Empp extends Component {
   //获取所有员工信息
   getEmpInfo() {
     api.getEmpInfo().then(res => {
-      //console.log(res);
+      console.log(res);
       if (res.code == 0) {
         let list = res.content;
         //console.log(list)
@@ -134,6 +135,8 @@ choiceDept = (value) => {
     // initialize
     if ((intStrLen != 15) && (intStrLen != 18)) {
       callback('身份证号长度错误!')
+    }else{
+      callback()
     }
     // check and set value
     for (let i = 0; i < intStrLen; i++) {
@@ -142,6 +145,8 @@ choiceDept = (value) => {
         callback('错误的身份证号!')
       } else if (i < 17) {
         varArray[i] = varArray[i] * factorArr[i];
+      }else{
+        callback()
       }
     }
     if (intStrLen == 18) {
@@ -150,6 +155,8 @@ choiceDept = (value) => {
       if (this.isDate8(date8) == false) {
         callback('身份证中日期信息不正确!')
         return false;
+      }else{
+        callback()
       }
       for (let i = 0; i < 17; i++) {
         lngProduct = lngProduct + varArray[i];
@@ -169,6 +176,8 @@ choiceDept = (value) => {
       if (varArray[17].toUpperCase() != intCheckDigit) {
         callback('身份证效验位错误!...正确为： " + intCheckDigit + "."')
         return false;
+      }else{
+        callback()
       }
     }
     else { // length is 15
@@ -219,6 +228,8 @@ choiceDept = (value) => {
     var mobile = /^(13[0-9]{9})|(18[0-9]{9})|(14[0-9]{9})|(17[0-9]{9})|(15[0-9]{9})$/;
     if (!mobile.test(value)) {
       callback('手机号码格式错误！')
+    }else{
+      callback()
     }
   }
 
@@ -263,6 +274,40 @@ choiceDept = (value) => {
     message.error('该员工属于在职状态，无法删除其资料！');
   }
 
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      //console.log(values)
+        var params = {
+          empId:values.key,
+          empName:values.name,
+          sex:values.sex,
+          age:values.age,
+          card:values.card,
+          phone:values.phone,
+          email:values.email,
+          deptName:values.dept,
+          jobName:values.jobName,
+        };  
+        console.log(params)
+        api.addEmp(params).then(res =>{
+           console.log(res);
+          if(res.code == 0){
+            message.success('修改成功！')
+            setTimeout(() => {
+              window.location.reload(true);
+            }, 1500);
+          }else{
+            message.error(res.err);
+          }
+        })
+      
+    });
   }
 
 
@@ -374,11 +419,20 @@ choiceDept = (value) => {
           title="信息录入"
           visible={visible}
           wrapClassName="vertical-center-modal"
-          okText="保存"
-          cancelText="取消"
+          footer={null}
           onCancel={() => this.setState({ visible: false,formSource:[] })}>
           
           <Form onSubmit={this.handleSubmit}>
+          <Form.Item
+              label="姓名"
+              style={{display:'none'}}>
+              {getFieldDecorator('key', {
+                initialValue: formSource.key ||''
+              }
+              )(
+                <Input type="text" style={{ width: 120 }} />
+              )}
+            </Form.Item>
             <Form.Item
               label="姓名">
               {getFieldDecorator('name', {
@@ -425,8 +479,6 @@ choiceDept = (value) => {
               {getFieldDecorator('card', {
                 rules: [{
                   required: true, message: '请输入身份证号!',
-                }, {
-                  validator: this.isIdCardNo,
                 }],
                 initialValue: formSource.card ||''
               })(
@@ -450,7 +502,7 @@ choiceDept = (value) => {
             <Form.Item
               label="职位"
             >
-              {getFieldDecorator('job', {
+              {getFieldDecorator('jobName', {
                 rules: [{
                   required: true, message: '请填写职位!',
                 }],
@@ -488,6 +540,11 @@ choiceDept = (value) => {
               })(
                 <Input type="email" style={{ width: 180 }} />
               )}
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit" style={{float:'right'}}>
+                     保存
+              </Button>
             </Form.Item>
           </Form>
         </Modal>

@@ -151,10 +151,6 @@ class Departmentt extends Component {
    const { TextArea } = Input;
     const columns = [ 
     {
-      title: 'ID', 
-      dataIndex: 'key', 
-      key: 'key', 
-      },{
       title: '部门名称', 
       dataIndex: 'name', 
       key: 'name', 

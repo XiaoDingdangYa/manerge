@@ -13,7 +13,7 @@ export default{
     },
     //2.修改用户密码
     updatePassword:params => {
-        return axios.get(`${_baseUrl}/user/updatePassword`,{params:params}).then(res=>res.data)
+        return axios.get(`${_baseUrl}/update`,{params:params}).then(res=>res.data)
     },
 
     //3.用户菜单列表
@@ -46,54 +46,64 @@ export default{
         return axios.post(`${_baseUrl}/dept/del`,qs.stringify(params)).then(res=>res.data)
     },
 
-    //9.打卡
-    attend:params => {
-        return axios.get(`${_baseUrl}/attend/add`,{params:params}).then(res=>res.data)
+    //9.上班打卡
+    attendUp:params => {
+        return axios.get(`${_baseUrl}/attend/up`,{params:params}).then(res=>res.data)
+    },
+
+    //10.下班打卡
+    attendDown:params => {
+        return axios.get(`${_baseUrl}/attend/down`,{params:params}).then(res=>res.data)
     },
     
-    //10.权限角色
+    //11.权限角色
     getRole:params => {
         return axios.get(`${_baseUrl}/power/all`).then(res=>res.data)
     },
 
-     //11.对应角色用户
+     //12.对应角色用户
      getRoleuser:params => {
         return axios.get(`${_baseUrl}/power/select`,{params:params}).then(res=>res.data)
     },
 
-    //12.删除角色
+    //13.删除角色
     deleteRole:params => {
         return axios.get(`${_baseUrl}/power/del`,{params:params}).then(res=>res.data)
     },
 
-    //13.未授权角色列表
+    //14.未授权角色列表
     addUser:params => {
         return axios.get(`${_baseUrl}/power/user`,{params:params}).then(res=>res.data)
     },
 
-    //14.新增权限角色
+    //15.新增权限角色
     addRole:params => {
         return axios.get(`${_baseUrl}/power/insert`,{params:params}).then(res=>res.data)
     },
 
-    //15.修改部门信息
+    //16.修改部门信息
     addDept:params => {
         return axios.post(`${_baseUrl}/dept/insert`,qs.stringify(params)).then(res=>res.data)
     },
 
-    //16.个人考勤信息
+    //17.个人考勤信息
     getUserAttend:params => {
         return axios.get(`${_baseUrl}/attend/info`,{params:params}).then(res=>res.data)
     },
 
-    //17.考勤统计信息
+    //18.考勤统计信息
     getAllAttend:() => {
         return axios.get(`${_baseUrl}/attend/all`).then(res=>res.data)
     },
 
-    //18.调用是否存在当日打卡信息
+    //19.调用是否存在当日打卡信息
     attendExist:params => {
         return axios.get(`${_baseUrl}/attend/exist`,{params:params}).then(res=>res.data)
+    },
+
+    //20.修改、新增员工信息
+    addEmp:params => {
+        return axios.post(`${_baseUrl}/user/insert`,qs.stringify(params)).then(res=>res.data)
     },
     
 }

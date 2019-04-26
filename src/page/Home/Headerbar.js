@@ -21,9 +21,7 @@ class Header extends Component {
       avatar: require('./02.jpg'),
       date:new Date(),//当前时间
       endate:new Date(new Date(new Date().toLocaleDateString()).getTime()+24*60*60*1000-1),//当天23：59：59
-      downdate:new Date(new Date(new Date().toLocaleDateString()).getTime()+17*30*60*1000-1),
-      up_date:false,//签到状态
-      down_date:false,//签退状态
+      downdate:new Date(new Date(new Date().toLocaleDateString()).getTime()+18*60*59*989-1).toLocaleTimeString('en-US', { hour12: false }),
       up_disabled:false,//签到按钮disabled
       down_disabled:false,//签退按钮disabled
     }
@@ -108,17 +106,19 @@ class Header extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        //console.log('Received values of form: ', values);
+        console.log(this.state.user)
         var params = {
-          userName: values.userName,
+          userName: this.state.user,
           oldPassword: md5(values.oldPassword),
           password:md5(values.password)
         };  
         api.updatePassword(params).then(res =>{
           console.log(res);
          if(res.code == 0){
-           console.log('修改成功')
-           this.props.history.push({pathname:'/login'})
+           message.success('修改成功!')
+           setTimeout(() => {
+            this.props.history.push({pathname:'/login'})
+          }, 1500);   
          }else{
            message.error(res.message);
          }
@@ -138,60 +138,94 @@ class Header extends Component {
       userId:this.state.userId
     }
     api.attendExist(params).then(res =>{
-      console.log(res)
+      console.log(res.content)
+      if (res.code == 0) {
+        if(res.content.upStatus == '1'){
+          this.setState({up_disabled:false})
+        }else{
+          this.setState({up_disabled:true})
+        }
+        if(res.content.downStatus == '1'){
+          this.setState({down_disabled:false})
+        }else{
+          this.setState({down_disabled:true})
+        }
+      }
     })
   }
 
   //签到
   handleUp = () =>{
-    console.log('签到')
-    console.log(this.state.user)
-    this.setState({up_date:true,up_disabled:true})
        var params = {
-        attend:this.state.date,
-        userId:this.state.user
+        userId:this.state.userId
      };  
-     console.log(params.attend)
-  //   api.attend(params).then(res =>{
-  //     console.log(res);
-  //    if(res.code == 0){
-  //      console.log('打卡成功')
-  //    }else{
-  //      message.error(res.message);
-  //    }
-  //  })
+    api.attendUp(params).then(res =>{
+      //console.log(res);
+     if(res.code == 0){
+      this.setState({up_disabled:true})
+      message.success('签到成功！')
+     }else{
+       message.error(res.message);
+     }
+   })
   }
 
   //签退
   handleDown = () =>{
-    if(this.state.up_date){
+    if(this.state.up_disabled == true){
       console.log('签退')
       var params = {
-        attend:this.state.date,
-        userId:this.state.user
+        userId:this.state.userId
      };  
-     //   api.atten(params).then(res =>{
-      //     console.log(res);
-      //    if(res.code == 0){
-      //      console.log('打卡成功')
-      //    }else{
-      //      message.error(res.message);
-      //    }
-      //  })
+     console.log(this.state.downdate)
+
+     if (this.state.date.toLocaleTimeString('en-US', { hour12: false }) < this.state.downdate) {
+      Modal.confirm({
+        content:'还未到下班时间，确认签退？',
+        onOk:this.down
+      })
+     }else{
+        api.attendDown(params).then(res =>{
+          console.log(res);
+         if(res.code == 0){
+          this.setState({down_disabled:true})
+          message.success('签退成功！');           
+         }else{
+           message.error(res.message);
+         }
+       })
+     }
+      
     }else{
      message.warning('请先签到！')
     }
   }
 
+  down = () => {
+    var params = {
+      userId:this.state.userId
+   };
+    api.attendDown(params).then(res =>{
+          console.log(res);
+         if(res.code == 0){
+          this.setState({down_disabled:true})
+          message.success('签退成功！');           
+         }else{
+           message.error(res.message);
+         }
+       })  
+  }
+
   render() {
     const { getFieldDecorator } = this.props.form;
-    const {icon, avatar} = this.state;
-    const {collapsed} = this.props
+    const {icon, avatar,up_disabled,down_disabled,up_date,down_date} = this.state;
+    const {collapsed} = this.props;
     var _user = this.props.userName;
     if( _user){
       _user = JSON.parse( _user).userName;
       //console.log(_user)
     }
+    
     const menu = (
       <Menu className='menu'>
         <Menu.ItemGroup title='用户中心' className='menu-group'>
@@ -207,16 +241,7 @@ class Header extends Component {
       </Dropdown>
     )
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 },
-        sm: { span: 8 },
-      },
-      wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 16 },
-      },
-    }
+
     
     return (
       <div id='headerbar'>
@@ -242,10 +267,9 @@ class Header extends Component {
         title="修改密码"
         visible={this.state.visible}
         wrapClassName="vertical-center-modal"
-        okText="确认"
-        cancelText="取消"
+        footer={null}
         onCancel={() => this.setState({visible: false})}>
-        <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+        <Form  onSubmit={this.handleSubmit}>
           <Form.Item>
             <Input type="hidden" value={_user} />
           </Form.Item>
@@ -285,6 +309,11 @@ class Header extends Component {
             })(
               <Input type="password" />
             )}
+          </Form.Item>
+          <Form.Item>
+              <Button type="primary" htmlType="submit" style={{float:'right'}}>
+                     保存
+              </Button>
           </Form.Item>
         </Form>
       </Modal>

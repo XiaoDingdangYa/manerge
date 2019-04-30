@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button } from 'antd';
+import { Button, Form } from 'antd';
 
 
 class Leave extends Component {
@@ -18,9 +18,15 @@ class Leave extends Component {
 
   render() {
     return (
-      <Button size='large' style={{margin:10}}>
-          离职申请
-      </Button>
+      <Form onSubmit={this.handleSubmit}>
+      <Form.Item>
+          {getFieldDecorator('userName', {
+            rules: [{ required: true, message: 'Please input your username!' }],
+          })(
+            <Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="Username" />
+          )}
+        </Form.Item>
+      </Form>
     )
   }
 }

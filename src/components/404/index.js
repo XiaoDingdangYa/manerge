@@ -9,7 +9,10 @@ class routerEnter extends Component {
 
     }
   }
-
+  componentWillMount(){
+    sessionStorage.removeItem("openke");
+        sessionStorage.removeItem("selectedke");
+  }
 
 
 

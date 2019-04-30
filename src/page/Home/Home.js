@@ -3,6 +3,7 @@ import { message,Modal,Layout} from 'antd';
 import Headerbar from './Headerbar';
 import Sidebar from './Sidebar';
 import ContentMain from '../../components/ContentMain'
+import Welcome from './Welcome'
 import apis  from './../../api/api';
 import {withRouter} from "react-router-dom";
 
@@ -92,7 +93,8 @@ class Home extends Component {
 
 
   render() {
-    var _user = sessionStorage.getItem("user");   
+    var _user = sessionStorage.getItem("user"); 
+    var url = this.props.location.pathname  
     return (
       <div id='page'>
           <Layout>
@@ -107,7 +109,7 @@ class Home extends Component {
               <Headerbar collapsed={this.state.collapsed} onToggle={this.toggle} userName={_user}/>
               </Header>
               <Content>
-              <ContentMain/>
+              {url=='/'||url=='/Home'?<Welcome/>:<ContentMain/>}
               </Content>
               <Footer style={{ textAlign: 'center' }}>
                 Ant Design ©2019

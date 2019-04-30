@@ -46,17 +46,17 @@ class Per extends Component {
 
       getRole(){
         api.getRole().then(res => {
-            console.log(res);
+           // console.log(res);
            if(res.code == 0){
              let list=res.content;
              //console.log(list)
              var _roleList=[];
              for(let i=0;i<list.length;i++){
-               let _roleid = list[i].roleId
+               let _key = list[i].roleId
                let _name = list[i].roleName
                let _remark = list[i].remark
                let _count = list[i].userNum
-               _roleList.push({'roleid':_roleid,'name':_name,'remark':_remark,'count':_count})
+               _roleList.push({'key':_key,'name':_name,'remark':_remark,'count':_count})
              }
              this.setState({dataSource:_roleList})
            }else{
@@ -88,10 +88,6 @@ class Per extends Component {
    const {dataSource} = this.state
     const columns = [ 
       {
-      title: 'ID', 
-      dataIndex: 'roleid', 
-      key: 'roleid', 
-      },{
         title: '角色',
         dataIndex: 'name',
         key: 'name',
@@ -108,7 +104,7 @@ class Per extends Component {
         key: 'action',
         render: (text, record) => (
             <span>
-              <Link to={{pathname:"/Permission/AddRole", search: '?role='+record.roleid, query:{user: 'bar'}  }}>添加用户</Link>
+              <Link to={{pathname:"/Permission/AddRole", search: '?role='+record.key, query:{user: 'bar'}  }}>添加用户</Link>
             </span>
           ),
       }];

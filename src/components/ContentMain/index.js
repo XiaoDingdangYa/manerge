@@ -18,6 +18,9 @@ const Emp = LoadableComponent(()=>import('../Emp'))
 const Permission = LoadableComponent(()=>import('../Permission'))
 const AddRole = LoadableComponent(()=>import('../Permission/AddRole'))
 
+const BPM = LoadableComponent(()=>import('../BPM'))
+const Leave = LoadableComponent(()=>import('../BPM/Leave'))
+
 const routerEnter = LoadableComponent(()=>import('../404'))
 
 
@@ -53,6 +56,9 @@ class ContentMain extends Component {
 
                 <Route exact path="/Permission" component={Permission}/>
                 <Route exact path="/Permission/AddRole" component={AddRole}/>
+
+                <Route exact path="/BPM" component={BPM}/>
+                <Route exact path="/BPM/Leave" component={Leave}/>
                 
                 <Route exact path="/404" component={routerEnter}/>
 

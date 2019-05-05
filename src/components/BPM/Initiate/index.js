@@ -22,7 +22,7 @@ class BPM extends Component {
       const {userId} = this.state
     return (
       <Button size='large' style={{margin:10}}>
-          <Link to={{pathname:"/BPM/Leave", search: '?user='+userId }}>离职申请</Link>
+          <Link to={{pathname:"/BPM/Initiate/Leave", search: '?user='+userId }}>离职申请</Link>
       </Button>
     )
   }

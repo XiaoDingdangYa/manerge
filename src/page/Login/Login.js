@@ -59,12 +59,6 @@ class LoginForm extends React.Component {
                   )}
                   </Form.Item>
                   <Form.Item>
-                  {getFieldDecorator('remember', {
-                      valuePropName: 'checked',
-                      initialValue: true,
-                  })(
-                      <Checkbox><span className="ptext">Remember me</span></Checkbox>
-                  )}
                   <Button type="primary" ghost htmlType="submit" className="login-form-button">
                      登录
                   </Button>

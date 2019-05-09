@@ -54,7 +54,7 @@ class Sidebar extends Component {
   // 获取用户菜单列表
   getUserMenuList(){
      var list=this.props.data;
-     console.log(list)
+     //console.log(list)
      var _usermenuList=[]; 
         for(let i=0;i<list.length;i++){
           let _userchildMenuList=list[i].childrenMenu

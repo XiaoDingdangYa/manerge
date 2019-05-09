@@ -105,5 +105,21 @@ export default{
     addEmp:params => {
         return axios.post(`${_baseUrl}/user/insert`,qs.stringify(params)).then(res=>res.data)
     },
+
+    bpmStart:params => {
+        return axios.get(`${_baseUrl}/bpm/start`,{params:params}).then(res=>res.data)
+    },
+
+    bpmSelect:params => {
+        return axios.get(`${_baseUrl}/bpm/select`,{params:params}).then(res=>res.data)
+    },
+
+    bpmAgree:params => {
+        return axios.get(`${_baseUrl}/bpm/complete`,{params:params}).then(res=>res.data)
+    },
+
+    bpmDisagree:params => {
+        return axios.get(`${_baseUrl}/bpm/refuse`,{params:params}).then(res=>res.data)
+    },
     
 }

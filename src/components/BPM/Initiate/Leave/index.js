@@ -16,11 +16,13 @@ class Initiate extends Component {
       name:'',
       dept:'',
       job:'',
+      empSource:[],
     }
   }
 
   componentDidMount() {
       this.getUserInfo();   
+      this.getEmpInfo()
   }
 
   getUserInfo = () => {
@@ -30,7 +32,7 @@ class Initiate extends Component {
     api.getUserInfo(params).then(res => {
       if(res.code == 0){
         let list=res.content;
-        console.log(list)
+        //console.log(list)
           let _name = list.empName
           let _jobName = list.jobName
           let _dept = list.deptName
@@ -42,12 +44,72 @@ class Initiate extends Component {
     })
   }
 
+  getEmpInfo = () => {
+    api.getEmpInfo().then(res => {
+      //console.log(res);
+      if (res.code == 0) {
+        let list = res.content;
+        //console.log(list)
+        var _empList = [];
+        for (let i = 0; i < list.length; i++) {
+          let _key = list[i].empId
+          let _name = list[i].empName
+          _empList.push({ 'key': _key, 'name': _name })
+        }
+        this.setState({ empSource: _empList })
+      } else {
+        message.error(res.message);
+      }
+
+    })
+  }
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.form.validateFields((err, values) => {
+      if (err) {
+        return;
+      }
+      console.log(values)
+        var params = {
+          empId:this.state.id,
+          empName:this.state.name,
+          dept:this.state.dept,
+          in:values.in,
+          title:values.title,
+          leave:values.leave,
+          describtion:values.reason,
+          detailres:values.detailres,
+          deptName:values.bos,
+        };  
+        console.log(params)
+        api.bpmStart(params).then(res =>{
+           console.log(res);
+          if(res.code == 0){
+            message.success('提交成功！')
+            setTimeout(() => {
+              window.location.reload(true);
+            }, 1500);
+          }else{
+            message.error(res.err);
+          }
+        })
+      
+    });
+  }
 
 
 
   render() {
-    const {id,name,dept,job} = this.state
+    const {id,name,dept,job,empSource} = this.state
    const { getFieldDecorator } = this.props.form;
+   var userL = [];
+      //console.log(empSource)
+      if(empSource){
+        userL.push(empSource.map((item,index)=>
+       <Option value={item.name} key={item.key}>{item.name}</Option>
+       ))
+      }
     return (
       <div style={{height:'60vh',width:'80vh',...styles,margin:20}}>
         <Form layout="inline" onSubmit={this.handleSubmit}>
@@ -82,7 +144,13 @@ class Initiate extends Component {
               <Form.Item
               label='入职日期'
               style={{padding:5}}>
-                <DatePicker />                 
+              {getFieldDecorator('in', {
+                rules: [{
+                  required: true, message: '请选择入职日期!',
+                }],         
+              })(
+                <DatePicker />   
+              )}                
               </Form.Item>
           </Col>
           <Col span={24} style={{...styles}}>
@@ -122,7 +190,7 @@ class Initiate extends Component {
               <Form.Item
               label='离职原因'
               style={{padding:5}}>
-              {getFieldDecorator('leave', {
+              {getFieldDecorator('reason', {
                 rules: [{
                   required: true, message: '请选择离职原因!',
                 }],         
@@ -145,8 +213,31 @@ class Initiate extends Component {
               <Form.Item
               label='离职详细说明'
               style={{padding:5}}>
-                <TextArea rows={4} cols={100}/>            
+              {getFieldDecorator('detailres', {
+                
+              })(
+                <TextArea rows={4} cols={100}/>   
+              )}           
               </Form.Item>
+          </Col>
+          <Col span={24}>
+            <Form.Item
+                label='审批人选择'
+                style={{padding:5}}>
+                {getFieldDecorator('bos', {
+                  rules: [{
+                    required: true, message: '请选择审批人!',
+                  }],         
+                })(
+                  <Select style={{width:160}}
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+                  >
+                  {userL}
+                </Select>  
+                )}   
+              </Form.Item>    
           </Col>
           <Col span={24}>
               <Form.Item

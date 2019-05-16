@@ -121,5 +121,9 @@ export default{
     bpmDisagree:params => {
         return axios.get(`${_baseUrl}/bpm/refuse`,{params:params}).then(res=>res.data)
     },
+
+    selectBpmTask:params => {
+        return axios.get(`${_baseUrl}/bpm/selectBpmTask`,{params:params}).then(res=>res.data)
+    },
     
 }

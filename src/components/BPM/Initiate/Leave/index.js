@@ -70,11 +70,12 @@ class Initiate extends Component {
       if (err) {
         return;
       }
-      console.log(values)
+      //console.log(values)
         var params = {
           empId:this.state.id,
           empName:this.state.name,
           dept:this.state.dept,
+          job:this.state.job,
           in:values.in,
           title:values.title,
           leave:values.leave,

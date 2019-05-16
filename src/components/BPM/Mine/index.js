@@ -1,4 +1,4 @@
-import { Button, Divider, Form, Input, InputNumber, message, Modal, Popconfirm, Select, Table, Tag, Radio } from 'antd';
+import { Button, Divider, Form, Input, Col, message, Modal, Popconfirm, Select, Table, Tag, Radio } from 'antd';
 import React, { Component } from 'react';
 import { withRouter } from "react-router-dom";
 import api from './../../../api/api';
@@ -13,6 +13,7 @@ class mine extends Component {
       dataSource: [],
       visible: false,
       userSource:'',
+      infor:[],
     }
   }
 
@@ -59,12 +60,20 @@ class mine extends Component {
         let list = res.content;
         console.log(list)
         var _empList = [];
+        var _inforList = [];
         for (let i = 0; i < list.length; i++) {
           let _key = list[i].processInstanceId
           let _name = list[i].startName
-          let _title = list[i].title
+          let _title = list[i].infor.title
           let _describtion = list[i].describtion
-          _empList.push({ 'key': _key, 'name': _name, 'title': _title, 'describtion': _describtion })
+          let _status = list[i].status
+          let _infor = list[i].infor
+          if(_status == 0){
+            _status = '进行中'
+          }else{
+            _status = '已完成'
+          }
+          _empList.push({ 'key': _key, 'name': _name, 'title': _title, 'describtion': _describtion, 'status':_status, 'infor':_infor })
         }
         this.setState({ dataSource: _empList })
       } else {
@@ -87,14 +96,15 @@ class mine extends Component {
   }
 
  
-  selectRow = (e) =>{
-    console.log(e)
+  selectRow = (record) =>{
+    this.setState({visible:true,infor:record.infor})
+    console.log(record)
   }
 
  
   agree = (record) =>{
     var params = {
-      HandleName:this.state.userSource,
+      handleName:this.state.userSource,
       startName:record.name
     }
     console.log(params)
@@ -114,8 +124,10 @@ class mine extends Component {
 
   disagree = (record) =>{
     var params = {
-      name:this.state.userSource
+      handleName:this.state.userSource,
+      startName:record.name
     }
+    //console.log(params)
     api.bpmDisagree(params).then(res =>{
       if(res.code == 0){
         message.success('该申请已拒绝！')
@@ -133,19 +145,21 @@ class mine extends Component {
 
 
   render() {
-    const { dataSource,formSource,visible } = this.state
-    const Search = Input.Search;
-    const Option = Select.Option;
+    const { dataSource,infor,visible } = this.state
     const columns = [
       {
         title: '申请人',
         width: 100,
         dataIndex: 'name',
-        render: text => <a href="#">{text}</a>,
+        render: (text,record) => <a href="javascript:void(0)" onClick={() => this.selectRow(record)}>{text}</a>,
       }, {
         title: '主题',
         dataIndex: 'title',
         key: 'title',
+      }, {
+        title: '审批状态',
+        dataIndex: 'status',
+        key: 'status',
       }, {
         title: '操作',
         key: 'action',
@@ -166,122 +180,99 @@ class mine extends Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={dataSource} scroll={{ x: 1300 }} style={{ clear: 'both' }} 
-        onRow={(record) => ({
-          onClick: () => {
-            this.selectRow(record);
-          },
-        })}/>
+        <Table columns={columns} dataSource={dataSource} scroll={{ x: 1300 }} style={{ clear: 'both' }} />
 
         {visible && <Modal
           title="信息录入"
           visible={visible}
           wrapClassName="vertical-center-modal"
           footer={null}
-          onCancel={() => this.setState({ visible: false,formSource:[] })}>
+          onCancel={() => this.setState({ visible: false,infor:[] })}>
           
-          <Form onSubmit={this.handleSubmit}>
-          <Form.Item
-              label="id"
-              style={{display:'none'}}>
-              {getFieldDecorator('key', {
-                initialValue: formSource.key ||''
-              }
-              )(
-                <Input type="text" style={{ width: 120 }} />
-              )}
-            </Form.Item>
+          <Form layout="inline" style={{height:400}}>
+          <Col span={24} style={{...styles}}>
             <Form.Item
-              label="姓名">
-              {getFieldDecorator('name', {
-                rules: [{
-                  required: true, message: '请输入姓名!',
-                }],
-                initialValue: formSource.name ||''
-              }
-              )(
-                <Input type="text" style={{ width: 120 }} />
-              )}
+            style={{padding:5}}>
+                <span style={{fontSize:'2rem'}}>离职申请</span>
             </Form.Item>
-            <Form.Item
-              label="年龄"
-            >
-              {getFieldDecorator('age', {
-                rules: [{
-                  required: true, message: '请输入年龄!',
-                }],
-                initialValue: formSource.age ||''
-              })(
-                <InputNumber />
-              )}
-            </Form.Item>
-            <Form.Item
-              label="性别"
-            >
-            {getFieldDecorator('sex', {
-                rules: [{
-                  required: true, message: '请选择性别!',
-                }],
-                initialValue: formSource.sex ||''
-              })(
-                <Radio.Group>
-                <Radio value="男">男</Radio>
-                <Radio value="女">女</Radio>
-              </Radio.Group>
-              )}
-              
-            </Form.Item>
-            <Form.Item
-              label="身份证号"
-            >
-              {getFieldDecorator('card', {
-                rules: [{
-                  required: true, message: '请输入身份证号!',
-                }],
-                initialValue: formSource.card ||''
-              })(
-                <Input type="text" style={{ width: 200 }} />
-              )}
-            </Form.Item>
-            <Form.Item
-              label="手机号码"
-            >
-              {getFieldDecorator('phone', {
-                rules: [{
-                  required: true, message: '请填写手机号码!',
-                }, {
-                  minlength: 11, message: '手机号码为11位字符'
-                }, {
-                  validator: this.isPhone,
-                }],
-                initialValue: formSource.phone ||''
-              })(
-                <Input type="number" style={{ width: 120 }} />
-              )}
-            </Form.Item>
-            <Form.Item
-              label="邮箱"
-            >
-              {getFieldDecorator('email', {
-                rules: [{
-                  required: true, message: '请填写邮箱!',
-                }],
-                initialValue: formSource.email ||''
-              })(
-                <Input type="email" style={{ width: 180 }} />
-              )}
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit" style={{float:'right'}}>
-                     保存
-              </Button>
-            </Form.Item>
-          </Form>
+          </Col>
+          <Col span={12} style={{...styles}}>
+              <Form.Item
+              label='员工ID'
+              style={{padding:5}}>
+                <span style={{textAlign:'left'}}>{infor.empId||'无'}</span>       
+              </Form.Item>
+          </Col>
+          <Col span={12} style={{...styles}}>
+              <Form.Item
+              label='姓名'
+              style={{padding:5}}>
+                <span style={{textAlign:'left'}}>{infor.empName||'无'}</span>                  
+              </Form.Item>
+          </Col>
+          <Col span={12} style={{...styles}}>
+              <Form.Item
+              label='部门'
+              style={{padding:5}}>
+                <span style={{textAlign:'left'}}>{infor.dept||'无'}</span>                  
+              </Form.Item>
+          </Col>
+          <Col span={12} style={{...styles}}>
+              <Form.Item
+              label='入职日期'
+              style={{padding:5}}>
+              <span style={{textAlign:'left'}}>{infor.in||'无'}</span>               
+              </Form.Item>
+          </Col>
+          <Col span={24} style={{...styles}}>
+              <Form.Item
+              label='主题'
+              style={{padding:5}}>
+              <span style={{textAlign:'left'}}>{infor.title||'无'}</span>            
+              </Form.Item>
+          </Col>
+          <Col span={12} style={{...styles}}>
+              <Form.Item
+              label='当前岗位'
+              style={{padding:5}}>
+                  <span style={{textAlign:'left'}}>{infor.job||'无'}</span>                  
+              </Form.Item>
+          </Col>
+          <Col span={12} style={{...styles}}>
+              <Form.Item
+              label='离职日期'
+              style={{padding:5}}>
+             <span style={{textAlign:'left'}}>{infor.leave||'无'}</span>               
+              </Form.Item>
+          </Col>
+          <Col span={24} style={{...styles}}>
+              <Form.Item
+              label='离职原因'
+              style={{padding:5}}>
+              <span style={{textAlign:'left'}}>{infor.describtion||'无'}</span>          
+              </Form.Item>
+          </Col>
+          <Col span={24} style={{...styles}}>
+              <Form.Item
+              label='离职详细说明'
+              style={{padding:5}}>
+              <span style={{textAlign:'left'}}>{infor.detailres||'无'}</span>            
+              </Form.Item>
+          </Col>
+        </Form>
         </Modal>
         }
       </div>
     )
   }
+}
+
+var styles={
+  borderStyle:'solid',
+  borderWidth:1,
+  borderColor:'black',
+  marginTop: -1,
+  borderColor:'rgb(180,204,238)'
 }
 
 const Mine = Form.create({ name: 'normal_bpmM' })(mine);

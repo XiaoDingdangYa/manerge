@@ -296,7 +296,7 @@ class Form1 extends Component {
                   </Radio.Group>
                 </Form.Item>
                 <Form.Item
-                label="经验"
+                label="工作经验"
                 >
                 {getFieldDecorator('poexperience', {
                   initialValue: '选择经验',
@@ -316,7 +316,7 @@ class Form1 extends Component {
               )}
                 </Form.Item>
                 <Form.Item
-                label="经验"
+                label="学历"
                 >
                 {getFieldDecorator('poeducation', {
                   initialValue: '选择学历',

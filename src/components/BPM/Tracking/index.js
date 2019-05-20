@@ -16,7 +16,9 @@ class track extends Component {
       infor:[],
       assignee:'',
       status:false,
-      end:false
+      leval2:false,
+      end:false,
+      leval3:false
     }
   }
 
@@ -99,17 +101,25 @@ class track extends Component {
 
  
   selectRow = (record) =>{
+    var index1 = 0 
     this.setState({visible:true,infor:record.infor})
     console.log(record)
+    for(let i=0;i<record.procedureList.length;i++){
+      if(record.procedureList[i].activityId == '_5'){
+        index1 = 1
+      }
+    }
     for(let i=0;i<record.procedureList.length;i++){
       if(record.procedureList[i].activityId == '_4'){
         this.setState({assignee:record.procedureList[i].assignee})
       }else if(record.procedureList[i].activityId == '_5'){
-        this.setState({status:true})
-      }else if(record.procedureList[i].activityId == '_7'){
-        this.setState({status:false})
-      }else if(record.procedureList[i].activityId == '_6'){
-        this.setState({end:true})
+        this.setState({status:true,leval2:true})
+      }else if(record.procedureList[i].activityId == '_6'&& record.status == '已完成' && index1 == 0){
+        this.setState({status:false,leval2:true})
+      }else if(record.procedureList[i].activityId == '_6' && record.status == '已完成' && index1 == 1){
+        this.setState({end:true,leval3:true})
+      }else if(record.procedureList[i].activityId == '_11'){
+        this.setState({status:false,leval3:true})
       }
     }
     
@@ -118,7 +128,7 @@ class track extends Component {
 
 
   render() {
-    const { dataSource,infor,visible,assignee,status,end } = this.state
+    const { dataSource,infor,visible,assignee,status,leval2,end,leval3 } = this.state
     const Search = Input.Search;
     const Option = Select.Option;
     const columns = [
@@ -234,9 +244,9 @@ class track extends Component {
           <Col span={24} style={{padding:5}}>
           <Timeline>
             <Timeline.Item color="green">{infor.empName||'无'}</Timeline.Item>
-            {status && <Timeline.Item color={status?'green':'red'}>{assignee}</Timeline.Item>}
-            {end && <Timeline.Item color={end?'green':'red'}>gouli</Timeline.Item>}
-            {end && <Timeline.Item color={end?'green':'red'}>已完结</Timeline.Item>}
+            {leval2 && <Timeline.Item color={status?'green':'red'}>{assignee}</Timeline.Item>}
+            {leval3 && <Timeline.Item color={end?'green':'red'}>gouli</Timeline.Item>}
+            {leval3 && <Timeline.Item color={end?'green':'red'}>已完结</Timeline.Item>}
           </Timeline>
           </Col>
         </Form>
